@@ -151,6 +151,43 @@ int main(int argc, char** argv)
 
   //____________________________________________________________________________________________________________________________
 
+  // Calculate size of the file
+  FILE *fileHandler = fopen("kernel_power_two.cl", "r");
+  fseek(fileHandler, 0, SEEK_END);
+  size_t fileSize = ftell(fileHandler);
+  rewind(fileHandler);
+
+  // read kernel source into buffer
+  char * sourceCode = (char*) malloc(fileSize + 1);
+  sourceCode[fileSize] = '\0';
+  fread(sourceCode, sizeof(char), fileSize, fileHandler);
+  fclose(fileHandler);
+
+  // create program from buffer
+  /*
+   * cl_context context,
+   * cl_uint count,
+   * const char **strings,
+   * const size_t *lengths,
+   * cl_int *errcode_ret*/
+
+  cl_program program = clCreateProgramWithSource(context, 1, (const char **)&sourceCode, &fileSize, &err);
+  cl_error(err, "Failed to create program with source\n");
+  free(sourceCode);
+
+
+  // Build the executable and check errors
+  //~ err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+  //~ if (err != CL_SUCCESS){
+    //~ size_t len;
+    //~ char buffer[2048];
+
+    //~ printf("Error: Some error at building process.\n");
+    //~ clGetProgramBuildInfo(/***???***/);
+    //~ printf("%s\n", buffer);
+    //~ exit(-1);
+  //~ }
+
 
   return 0;
 }
